@@ -15,11 +15,11 @@ async function getProductsByCode(code: number) {
   return result[0];
 }
 
-async function updateProduct(code: number, sales_price: number) {
+async function updateProduct(code: number, variation: number) {
   return await client.query(
     `
-    UPDATE products p SET p.sales_price = ? WHERE p.code = ? LIMIT 1`,
-    [sales_price, code],
+    UPDATE products p SET p.sales_price = p.sales_price * ? WHERE p.code = ? LIMIT 1`,
+    [variation, code],
   );
 }
 
