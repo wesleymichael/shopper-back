@@ -1,5 +1,7 @@
 import { Product, ProductInputValidate, ProductOutput } from '@/models/products.models';
 import productsRepository from '@/repository/products.repository.ts';
+// import packsServices from './packs.service';
+// import { Pack } from '@/models/packs.models';
 
 async function getAllProducts() {
   return await productsRepository.getAllProducts();
@@ -26,7 +28,14 @@ async function validateProduct(body: ProductInputValidate) {
 }
 
 async function updateProduct(code: number, sales_price: number) {
-  return await productsRepository.updateProduct(code, sales_price);
+  await productsRepository.updateProduct(code, sales_price);
+
+  //TODO
+  //Verificar se é um pack. Caso seja, atualizar o valor do produto que o compõe
+  //const pack = (await packsServices.getPackByCode(code)) as Pack[];
+  // pack.map((item) => {
+
+  // });
 }
 
 function isPriceVariationValid(sales_price: number, new_price: number) {
