@@ -13,12 +13,27 @@ async function validateProduct(body: ProductInputValidate) {
 
   const product = (await productsRepository.getProductsByCode(answer.code)) as Product[];
   answer.name = product[0].name;
+  answer.current_price = product[0].sales_price;
 
   if (answer.new_price < product[0].cost_price) {
     answer.error.push('New price below cost price');
   }
 
+  if (!isPriceVariationValid(answer.new_price, product[0].sales_price)) {
+    answer.error.push('Invalid price variation (greater than 10%)');
+  }
   return formatAnswer(answer);
+}
+
+function isPriceVariationValid(sales_price: number, new_price: number) {
+  const max_variation = 1.1;
+  const min_variation = 0.9;
+  const priceVariation = new_price / sales_price;
+
+  if (priceVariation > max_variation || priceVariation < min_variation) {
+    return false;
+  }
+  return true;
 }
 
 function validateBody(body: ProductInputValidate): ProductOutput {
