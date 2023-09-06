@@ -11,7 +11,8 @@ async function getAllProducts() {
 }
 
 async function getProductsByCode(code: number) {
-  return await client.query(`SELECT * FROM products p WHERE p.code = $1`, [code]);
+  const result = await client.query(`SELECT * FROM products p WHERE p.code = ?`, [code]);
+  return result[0];
 }
 
 const productsRepository = {

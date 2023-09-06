@@ -1,8 +1,8 @@
 export interface Product {
   code: number;
   name: string;
-  current_price: number;
-  new_price: number;
+  cost_price: number;
+  sales_price: number;
 }
 
 export interface ProductInputValidate {
@@ -73,11 +73,11 @@ export class ProductOutput {
     return this._error;
   }
 
-  set error(value: string | string[]) {
-    if (typeof value === 'string') {
-      this._error.push(value);
-    } else if (Array.isArray(value)) {
-      this._error.push(...value);
-    }
-  }
+  // set error(value: string | string[]) {
+  //   if (typeof value === 'string') {
+  //     this._error.push(value);
+  //   } else if (Array.isArray(value)) {
+  //     this._error.push(...value);
+  //   }
+  // }
 }

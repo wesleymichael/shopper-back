@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development.local nodemon 'src/' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts'",
+    "dev": "cross-env NODE_ENV=development.local nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register ./src/server.ts'",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
