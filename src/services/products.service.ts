@@ -25,6 +25,10 @@ async function validateProduct(body: ProductInputValidate) {
   return formatAnswer(answer);
 }
 
+async function updateProduct(code: number, sales_price: number) {
+  return await productsRepository.updateProduct(code, sales_price);
+}
+
 function isPriceVariationValid(sales_price: number, new_price: number) {
   const max_variation = 1.1;
   const min_variation = 0.9;
@@ -72,6 +76,7 @@ function formatAnswer(answer: ProductOutput) {
 const productsService = {
   getAllProducts,
   validateProduct,
+  updateProduct,
 };
 
 export default productsService;

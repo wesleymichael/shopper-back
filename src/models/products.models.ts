@@ -1,8 +1,11 @@
-export interface Product {
+export interface ProductInputUpdate {
   code: number;
+  sales_price: number;
+}
+
+export interface Product extends ProductInputUpdate {
   name: string;
   cost_price: number;
-  sales_price: number;
 }
 
 export interface ProductInputValidate {

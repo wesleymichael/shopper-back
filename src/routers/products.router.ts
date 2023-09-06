@@ -5,5 +5,6 @@ const productsRouter = Router();
 
 productsRouter.get('/products', getAllProducts);
 productsRouter.post('/validate', validateProduct);
+productsRouter.put('/products', () => console.log('update'));
 
 export default productsRouter;
