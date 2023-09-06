@@ -7,24 +7,33 @@ async function getAllProducts() {
   return await productsRepository.getAllProducts();
 }
 
-async function validateProduct(body: ProductInputValidate) {
-  const answer = validateBody(body);
-  if (answer.error.length !== 0) {
-    return formatAnswer(answer);
-  }
+async function validateProduct(body: ProductInputValidate[]) {
+  const resultArray = await Promise.all(
+    body.map(async (product) => {
+      const answer = validateBody(product);
+      if (answer.error.length !== 0) return formatAnswer(answer);
 
-  const product = (await productsRepository.getProductsByCode(answer.code)) as Product[];
-  answer.name = product[0].name;
-  answer.current_price = product[0].sales_price;
+      const resultProduct = (await productsRepository.getProductsByCode(answer.code)) as Product[];
+      if (resultProduct.length === 0) {
+        answer.error.push('There is no product registered with this code');
+        return formatAnswer(answer);
+      }
 
-  if (answer.new_price < product[0].cost_price) {
-    answer.error.push('New price below cost price');
-  }
+      answer.name = resultProduct[0].name;
+      answer.current_price = resultProduct[0].sales_price;
 
-  if (!isPriceVariationValid(answer.new_price, product[0].sales_price)) {
-    answer.error.push('Invalid price variation (greater than 10%)');
-  }
-  return formatAnswer(answer);
+      if (answer.new_price < resultProduct[0].cost_price) {
+        answer.error.push('New price below cost price');
+      }
+
+      if (!isPriceVariationValid(answer.new_price, resultProduct[0].sales_price)) {
+        answer.error.push('Invalid price variation (greater than 10%)');
+      }
+      return formatAnswer(answer);
+    }),
+  );
+
+  return resultArray;
 }
 
 async function updateProduct(body: ProductInputUpdate) {
@@ -88,10 +97,10 @@ function validateNumber(value: unknown): boolean {
 
 function formatAnswer(answer: ProductOutput) {
   return {
-    code: answer.code || 0,
+    code: Number(answer.code) || 0,
     name: answer.name || '',
     current_price: answer.current_price || 0,
-    new_price: answer.new_price || 1,
+    new_price: answer.new_price || 0,
     error: answer.error || [],
   };
 }
