@@ -31,10 +31,19 @@ async function updateProduct(body: ProductInputUpdate) {
   const { code, variation } = body;
   await productsRepository.updateProduct(code, variation);
 
+  //Atualização dos itens que compõe o pack
   const pack = (await packsServices.getPackByCode(code)) as Pack[];
   pack.map(async (item) => {
+    await productsRepository.updateProduct(item.product_id, variation);
+  });
+
+  //Atualização do pack que o produto pertence
+  const packByProductId = (await packsServices.getPackByProductId(code)) as Pack[];
+  packByProductId.map(async (item) => {
     await productsRepository.updateProduct(item.pack_id, variation);
   });
+
+  return { message: 'Update successfully' };
 }
 
 function isPriceVariationValid(sales_price: number, new_price: number) {
