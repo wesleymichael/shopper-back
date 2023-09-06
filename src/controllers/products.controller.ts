@@ -10,3 +10,12 @@ export async function getAllProducts(req: Request, res: Response) {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
+
+export async function validateProduct(req: Request, res: Response) {
+  try {
+    const result = await productsService.validateProduct(req.body);
+    return res.send(result);
+  } catch (error) {
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}

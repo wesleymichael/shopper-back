@@ -10,8 +10,13 @@ async function getAllProducts() {
   }
 }
 
+async function getProductsByCode(code: number) {
+  return await client.query(`SELECT * FROM products p WHERE p.code = $1`, [code]);
+}
+
 const productsRepository = {
   getAllProducts,
+  getProductsByCode,
 };
 
 export default productsRepository;
