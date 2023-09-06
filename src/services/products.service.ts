@@ -29,6 +29,8 @@ async function validateProduct(body: ProductInputValidate) {
 
 async function updateProduct(body: ProductInputUpdate) {
   const { code, variation } = body;
+
+  //Atualizei o pack ou o produto individual
   await productsRepository.updateProduct(code, variation);
 
   //Atualização dos itens que compõe o pack
@@ -39,9 +41,13 @@ async function updateProduct(body: ProductInputUpdate) {
 
   //Atualização do pack que o produto pertence
   const packByProductId = (await packsServices.getPackByProductId(code)) as Pack[];
-  packByProductId.map(async (item) => {
-    await productsRepository.updateProduct(item.pack_id, variation);
-  });
+  await Promise.all(
+    packByProductId.map(async (item) => {
+      const productInPack = (await productsRepository.getProductsByCode(item.product_id)) as Product[];
+      const increase_price = (variation - 1) * item.qty * productInPack[0].sales_price;
+      await productsRepository.updateProductPack(item.pack_id, increase_price);
+    }),
+  );
 
   return { message: 'Update successfully' };
 }
