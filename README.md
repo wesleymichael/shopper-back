@@ -22,7 +22,10 @@ Para executar esta aplicação, siga estas etapas:
    ```bash
    npm run dev
    ```
+6. Documentação
+   - Depois de executar a aplicação em [http://localhost:3000](http://localhost:3000), a **documentação** ficará disponível em [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
+   
 ## Stack Principal
 
 - Express
