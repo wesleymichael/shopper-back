@@ -2,6 +2,7 @@ import { Product, ProductInputUpdate, ProductInputValidate, ProductOutput } from
 import productsRepository from '@/repository/products.repository.ts';
 import packsServices from './packs.service';
 import { Pack } from '@/models/packs.models';
+import { notFoundError } from '@/errors';
 
 async function getAllProducts() {
   return await productsRepository.getAllProducts();
@@ -38,14 +39,15 @@ async function validateProduct(body: ProductInputValidate[]) {
 
 async function updateProduct(body: ProductInputUpdate[]) {
   try {
-    const updatedProducts = [];
-
     for (const product of body) {
       const { code, variation } = product;
 
       // Atualize o produto individual
-      const updatedProduct = await productsRepository.updateProduct(code, variation);
-      updatedProducts.push(updatedProduct);
+      const productByCode = await productsRepository.getProductsByCode(code);
+      if (!productByCode) {
+        throw notFoundError('Product not found');
+      }
+      await productsRepository.updateProduct(code, variation);
 
       // Atualize os itens que compõem o pack
       const pack = (await packsServices.getPackByCode(code)) as Pack[];
@@ -61,7 +63,7 @@ async function updateProduct(body: ProductInputUpdate[]) {
         await productsRepository.updateProductPack(item.pack_id, increase_price);
       }
     }
-    return { message: 'Update successfully', updatedProducts };
+    return { message: 'Update successfully' };
   } catch (error) {
     throw new Error('Failed to update products: ' + error.message);
   }
