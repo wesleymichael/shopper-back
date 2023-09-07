@@ -1,4 +1,4 @@
-# Shopper- server
+# Shopper - server
 API RESTful para Gestão de Preços de Produtos em E-commerce
 
 
@@ -23,7 +23,7 @@ Para executar esta aplicação, siga estas etapas:
    npm run dev
    ```
 6. Documentação
-   - Depois de executar a aplicação em [http://localhost:3000](http://localhost:3000), a **documentação** ficará disponível em [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+   - Depois de executar a aplicação em [http://localhost:4000](http://localhost:4000), a **documentação** ficará disponível em [http://localhost:4000/api-docs](http://localhost:4000/api-docs)
 
    
 ## Stack Principal
@@ -37,5 +37,4 @@ Para executar esta aplicação, siga estas etapas:
      - Nodemon
      - ts-node
      - tsconfig-paths
-     - TypeScript-transform-paths
 
