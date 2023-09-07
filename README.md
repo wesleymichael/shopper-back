@@ -1,5 +1,5 @@
 # Shopper - server
-API RESTful para Gestão de Preços de Produtos em E-commerce
+API RESTful para Gestão de Preços de Produtos
 
 
 ## Como Executar
