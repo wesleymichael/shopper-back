@@ -1,0 +1,186 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Shopper",
+    "description": "Documentation from Shopper API",
+    "version": "1.0.0",
+    "contact": {
+      "email": "wesleymichaelpereira@hotmail.com"
+    }
+  },
+  "paths": {
+    "/products": {
+      "get": {
+        "summary": "Obter produtos",
+        "description": "Retorna uma lista de todos os produtos",
+        "responses": {
+          "200": {
+            "description": "Lista de produtos obtida com sucesso"
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar produtos",
+        "description": "Atualiza um conjunto de produtos com base em determinado esquema",
+        "requestBody": {
+          "description": "Objeto contendo um array de produtos a serem atualizados",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "products": [
+                  {
+                    "code": 123,
+                    "variation": 0.1
+                  },
+                  {
+                    "code": 456,
+                    "variation": 0.2
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Update successfully"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Campos obrigatórios ausentes ou formato inválido"
+          }
+        }
+      }
+    },
+    "/validate": {
+      "post": {
+        "summary": "Validar produtos",
+        "description": "Valida um conjunto de produtos com base em determinado esquema",
+        "requestBody": {
+          "description": "Array de objetos contendo produtos a serem validados. A aplicação receberá um array de objetos e validará se cada produto odebede as regras de negócio definidas",
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": [
+                {
+                  "product_code": 10,
+                  "new_price": 50
+                },
+                {
+                  "product_code": 20
+                },
+                {
+                  "new_price": 75
+                },
+                {
+                }
+              ],
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "product_code": {
+                      "type": "number",
+                      "description": "Código do produto"
+                    },
+                    "new_price": {
+                      "type": "number",
+                      "description": "Novo preço do produto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto validado com sucesso",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "code": 10,
+                    "name": "",
+                    "current_price": 0,
+                    "new_price": 50,
+                    "error": [
+                      "There is no product registered with this code"
+                    ]
+                  },
+                  {
+                    "code": 20,
+                    "name": "",
+                    "current_price": 0,
+                    "new_price": 0,
+                    "error": [
+                      "New_price is not sent or is invalid"
+                    ]
+                  },
+                  {
+                    "code": 0,
+                    "name": "",
+                    "current_price": 0,
+                    "new_price": 75,
+                    "error": [
+                      "Product_code is not sent or is invalid"
+                    ]
+                  },
+                  {
+                    "code": 0,
+                    "name": "",
+                    "current_price": 0,
+                    "new_price": 0,
+                    "error": [
+                      "New_price is not sent or is invalid",
+                      "Product_code is not sent or is invalid"
+                    ]
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "description": "Código do produto validado"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Nome do produto"
+                      },
+                      "current_price": {
+                        "type": "number",
+                        "description": "Preço atual do produto"
+                      },
+                      "new_price": {
+                        "type": "number",
+                        "description": "Novo preço do produto"
+                      },
+                      "errors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "description": "Lista de erros (se houver)"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }    
+  }
+}

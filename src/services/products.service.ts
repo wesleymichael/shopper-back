@@ -38,14 +38,11 @@ async function validateProduct(body: ProductInputValidate[]) {
 
 async function updateProduct(body: ProductInputUpdate[]) {
   try {
-    const updatedProducts = [];
-
     for (const product of body) {
       const { code, variation } = product;
 
       // Atualize o produto individual
-      const updatedProduct = await productsRepository.updateProduct(code, variation);
-      updatedProducts.push(updatedProduct);
+      await productsRepository.updateProduct(code, variation);
 
       // Atualize os itens que compõem o pack
       const pack = (await packsServices.getPackByCode(code)) as Pack[];
@@ -61,7 +58,7 @@ async function updateProduct(body: ProductInputUpdate[]) {
         await productsRepository.updateProductPack(item.pack_id, increase_price);
       }
     }
-    return { message: 'Update successfully', updatedProducts };
+    return { message: 'Update successfully' };
   } catch (error) {
     throw new Error('Failed to update products: ' + error.message);
   }

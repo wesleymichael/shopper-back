@@ -25,6 +25,9 @@ export async function updateProduct(req: Request, res: Response) {
     const result = await productsService.updateProduct(req.body.products);
     return res.status(httpStatus.OK).send(result);
   } catch (error) {
+    if (error.name === 'NotFoundError') {
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    }
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
