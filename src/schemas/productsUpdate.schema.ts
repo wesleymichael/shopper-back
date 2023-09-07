@@ -1,8 +1,12 @@
 import joi from 'joi';
 
-const productUpdateSchema = joi.object({
-  code: joi.number().required(),
-  variation: joi.number().required(),
+const productSchema = joi.object({
+  products: joi.array().items(
+    joi.object({
+      code: joi.number().required(),
+      variation: joi.number().required(),
+    }),
+  ),
 });
 
-export default productUpdateSchema;
+export default productSchema;

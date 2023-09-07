@@ -22,7 +22,7 @@ export async function validateProduct(req: Request, res: Response) {
 
 export async function updateProduct(req: Request, res: Response) {
   try {
-    const result = await productsService.updateProduct(req.body);
+    const result = await productsService.updateProduct(req.body.products);
     return res.status(httpStatus.OK).send(result);
   } catch (error) {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
