@@ -30,11 +30,11 @@
               "example": {
                 "products": [
                   {
-                    "code": 123,
+                    "code": 16,
                     "variation": 0.1
                   },
                   {
-                    "code": 456,
+                    "code": 1010,
                     "variation": 0.2
                   }
                 ]
@@ -52,6 +52,9 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Algum código de produto enviado não pertence a nenhum produto registrado no banco de dados"
           },
           "422": {
             "description": "Campos obrigatórios ausentes ou formato inválido"
