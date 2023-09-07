@@ -2,6 +2,7 @@ import { Product, ProductInputUpdate, ProductInputValidate, ProductOutput } from
 import productsRepository from '@/repository/products.repository.ts';
 import packsServices from './packs.service';
 import { Pack } from '@/models/packs.models';
+import { notFoundError } from '@/errors';
 
 async function getAllProducts() {
   return await productsRepository.getAllProducts();
@@ -37,31 +38,35 @@ async function validateProduct(body: ProductInputValidate[]) {
 }
 
 async function updateProduct(body: ProductInputUpdate[]) {
-  try {
-    for (const product of body) {
-      const { code, variation } = product;
+  const productCode = await productsRepository.getProductCode();
 
-      // Atualize o produto individual
-      await productsRepository.updateProduct(code, variation);
-
-      // Atualize os itens que compõem o pack
-      const pack = (await packsServices.getPackByCode(code)) as Pack[];
-      for (const item of pack) {
-        await productsRepository.updateProduct(item.product_id, variation);
-      }
-
-      // Atualize o pack que o produto pertence
-      const packByProductId = (await packsServices.getPackByProductId(code)) as Pack[];
-      for (const item of packByProductId) {
-        const productInPack = (await productsRepository.getProductsByCode(item.product_id)) as Product[];
-        const increase_price = (variation - 1) * item.qty * productInPack[0].sales_price;
-        await productsRepository.updateProductPack(item.pack_id, increase_price);
-      }
+  body.forEach((product) => {
+    if (!productCode[product.code]) {
+      throw notFoundError('Product not found');
     }
-    return { message: 'Update successfully' };
-  } catch (error) {
-    throw new Error('Failed to update products: ' + error.message);
+  });
+
+  for (const product of body) {
+    const { code, variation } = product;
+
+    // Atualize o produto individual
+    await productsRepository.updateProduct(code, variation);
+
+    // Atualize os itens que compõem o pack
+    const pack = (await packsServices.getPackByCode(code)) as Pack[];
+    for (const item of pack) {
+      await productsRepository.updateProduct(item.product_id, variation);
+    }
+
+    // Atualize o pack que o produto pertence
+    const packByProductId = (await packsServices.getPackByProductId(code)) as Pack[];
+    for (const item of packByProductId) {
+      const productInPack = (await productsRepository.getProductsByCode(item.product_id)) as Product[];
+      const increase_price = (variation - 1) * item.qty * productInPack[0].sales_price;
+      await productsRepository.updateProductPack(item.pack_id, increase_price);
+    }
   }
+  return { message: 'Update successfully' };
 }
 
 function isPriceVariationValid(sales_price: number, new_price: number) {

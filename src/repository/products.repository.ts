@@ -31,11 +31,22 @@ async function updateProductPack(code: number, increase_price: number) {
   );
 }
 
+async function getProductCode() {
+  const result = await client.query('SELECT DISTINCT code FROM products;');
+  const codes = result[0] as { code: number }[];
+  const productCodeHashTable: { [key: number]: boolean } = {};
+  for (const item of codes) {
+    productCodeHashTable[item.code] = true;
+  }
+  return productCodeHashTable;
+}
+
 const productsRepository = {
   getAllProducts,
   getProductsByCode,
   updateProduct,
   updateProductPack,
+  getProductCode,
 };
 
 export default productsRepository;
